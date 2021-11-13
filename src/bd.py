@@ -4,25 +4,11 @@ import sqlite3
 class bd:
     def __init__(self):
         print('Ininciando conexão com o bacno de dados')
+
+    def abrirConexao(self):
         try:
-            conection = sqlite3.connect('./bancocadastro.db')
-            cursor = conection.cursor()
-            print("Conexão com banco feito com sucesso")
-
-        except conection.DatabaseError as erro:
-            print("Erro de conexão :", erro)
-
-        finally:
-            if conection:
-                cursor.close()
-                print("tabela fechada")
-                conection.close()
-                print("Conexão fechada")
-
-    def conection(self):
-        try:
-            conection = sqlite3.connect('./bancocadastro.db')
-            cursor = conection.cursor()
+            self.connection = sqlite3.connect('./bancocadastro.db')
+            cursor = self.connection.cursor()
             print("Conexão com banco feito com sucesso")
             ## CRIANDO TABLEA DO USUARIO
             table_pessoa = """CREATE TABLE IF NOT EXISTS pessoa(
@@ -42,27 +28,121 @@ class bd:
                                    );"""
             cursor.execute(table_pessoa)
             cursor.execute(table_imagem)
-            conection.commit()
+            self.connection.commit()
             print("tabela criada com sucesso")
 
-        except conection.DatabaseError as erro:
+        except ConnectionError as erro:
             print("Erro de conexão :", erro)
 
         finally:
-            if conection:
+            if self.connection:
                 cursor.close()
-                conection.close()
+                self.connection.close()
                 print("Conexão fechada")
 
-    def insert(self, nome, cpf, user, pwd):
+    ## Criação de usuario
+    def insert_user(self, nome, cpf, user, pwd):
         try:
-            conection = sqlite3.connect('./bancocadastro.db')
-            cursor = conection.cursor()
-            insert = """INSERT INT pessoa(nome,cpf,user,pwd) VALUES(?,?,?,?)"""
-            cursor.execute(insert, (nome, cpf, user, pwd))
-            conection.commit()
-        except conection.DatabaseError as erro:
-            print("Erro de conexão : ", erro)
+            self.abrirConexao()
+            cursor = self.connection.cursor()
+            insert = """INSERT INTO pessoa(nome,cpf,user,pwd) VALUES(?,?,?,?)"""
+            registro = (nome, cpf, user, pwd)
+            cursor.execute(insert, registro)
+            self.conection.commit()
+        except Exception as erro:
+            print("Erro ao inserir novo usuario : ", erro)
+        finally:
+            if (self.connection):
+                cursor.close()
+                self.connection.close()
+
+    ## Seleção de usuario
+    def select_user(self, user, pwd):
+        try:
+            self.abrirConexao()
+            cursor = self.connection.cursor()
+            select = """SELECT * FROM pessoa WHERE user = ? and pwd = ?"""
+            cursor.execute(select, (user, pwd))
+            if user and pwd in select:
+                print("Entrando")
+            elif user and not pwd in select:
+                print("Senha invalida, Tente novamente")
+            else:
+                print("Usuario não existente, cadastre um novo usuario")
+
+        except Exception as erro:
+            print("Erro ao pequisar usuario : ", erro)
+
+        finally:
+            if self.connection:
+                cursor.close()
+                self.connection.close()
+
+    def insert_image(self, user, title, path, name):
+        try:
+            self.conection()
+            cursor = self.conection.cursor()
+            insert = """INSERT INTO imagem(user,title,path,name) VALUES(?,?,?,?)"""
+            cursor.execute(insert, (user, title, path, name))
+            self.conection.commit()
+        except Exception as erro:
+            print("Erro ao inserir nova imagem : ", erro)
+        finally:
+            if self.conection:
+                cursor.close()
+                self.conection.close()
+
+    def select_image(self, user, path):
+        try:
+            self.conection()
+            cursor = self.conection.cursor()
+            select = """SELECT * FROM imagem WHERE user =? and path =?"""
+            cursor.execute(select, (user, path))
+        except Exception as erro:
+            print("Erro ao selecionar imagem: ", erro)
+        finally:
+            if self.conection:
+                cursor.close()
+                self.conection.close()
+
+    def update_image(self, title, path):
+        try:
+            self.conection()
+            cursor = self.conection.cursor()
+            update = """UPDATE imagem SET title = ? and path=?"""
+            cursor.execute(update, (title, path))
+            self.conection.commit()
+        except Exception as erro:
+            print("Erro ao atualizar imagem :", erro)
+        finally:
+            if self.conection:
+                cursor.close()
+                self.conection.close()
+
+    def delete_image(self, title, path):
+        try:
+            self.conection()
+            cursor = self.conection.cursor()
+            delete = """DELETE FROM imagem WHERE title = ? and path=?"""
+            cursor.execute(delete, (title, path))
+            self.conection.commit()
+        except Exception as erro:
+            print("Erro ao deletar imagem :", erro)
+
         finally:
             cursor.close()
-            conection.close()
+            self.conection.close()
+
+    def initial_image(self, user):
+        try:
+            self.conection()
+            cursor = self.conection.cursor()
+            select = """SELECT * FROM imagem WHERE user =?"""
+            cursor.execute(select, (user))
+            cursor.fetchall()
+        except Exception as erro:
+            print("Erro ao selecionar imagem: ", erro)
+        finally:
+            if self.conection:
+                cursor.close()
+                self.conection.close()
