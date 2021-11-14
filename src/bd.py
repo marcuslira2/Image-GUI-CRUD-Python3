@@ -7,8 +7,8 @@ class bd:
 
     def abrirConexao(self):
         try:
-            self.connection = sqlite3.connect('./bancocadastro.db')
-            cursor = self.connection.cursor()
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
             print("Conexão com banco feito com sucesso")
             ## CRIANDO TABLEA DO USUARIO
             table_pessoa = """CREATE TABLE IF NOT EXISTS pessoa(
@@ -28,63 +28,62 @@ class bd:
                                    );"""
             cursor.execute(table_pessoa)
             cursor.execute(table_imagem)
-            self.connection.commit()
+            connection.commit()
             print("tabela criada com sucesso")
 
-        except ConnectionError as erro:
+        except sqlite3.DatabaseError as erro:
             print("Erro de conexão :", erro)
 
         finally:
-            if self.connection:
+            if connection:
                 cursor.close()
-                self.connection.close()
+                connection.close()
                 print("Conexão fechada")
 
     ## Criação de usuario
-    def insert_user(self, nome, cpf, user, pwd):
+    def insert_user(self,nome, cpf, user, pwd):
         try:
-            self.abrirConexao()
-            cursor = self.connection.cursor()
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
             insert = """INSERT INTO pessoa(nome,cpf,user,pwd) VALUES(?,?,?,?)"""
             registro = (nome, cpf, user, pwd)
             cursor.execute(insert, registro)
-            self.conection.commit()
+            connection.commit()
         except Exception as erro:
             print("Erro ao inserir novo usuario : ", erro)
         finally:
-            if (self.connection):
+            if connection:
                 cursor.close()
-                self.connection.close()
+                connection.close()
 
     ## Seleção de usuario
-    def select_user(self, user, pwd):
+    def select_user(self, user):
         try:
-            self.abrirConexao()
-            cursor = self.connection.cursor()
-            select = """SELECT * FROM pessoa WHERE user = ? and pwd = ?"""
-            cursor.execute(select, (user, pwd))
-            if user and pwd in select:
-                print("Entrando")
-            elif user and not pwd in select:
-                print("Senha invalida, Tente novamente")
-            else:
-                print("Usuario não existente, cadastre um novo usuario")
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
+            select = """SELECT * FROM pessoa WHERE user = ?"""
+            cursor.execute(select, user)
+            result=cursor.fetchone()
+            print(result)
+            return result
 
         except Exception as erro:
             print("Erro ao pequisar usuario : ", erro)
 
         finally:
-            if self.connection:
+            if connection:
                 cursor.close()
-                self.connection.close()
+                connection.close()
 
     def insert_image(self, user, title, path, name):
         try:
-            self.conection()
-            cursor = self.conection.cursor()
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
             insert = """INSERT INTO imagem(user,title,path,name) VALUES(?,?,?,?)"""
             cursor.execute(insert, (user, title, path, name))
             self.conection.commit()
+            return title,path,name
+
         except Exception as erro:
             print("Erro ao inserir nova imagem : ", erro)
         finally:
@@ -94,55 +93,55 @@ class bd:
 
     def select_image(self, user, path):
         try:
-            self.conection()
-            cursor = self.conection.cursor()
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
             select = """SELECT * FROM imagem WHERE user =? and path =?"""
             cursor.execute(select, (user, path))
         except Exception as erro:
             print("Erro ao selecionar imagem: ", erro)
         finally:
-            if self.conection:
+            if connection:
                 cursor.close()
-                self.conection.close()
+                connection.close()
 
     def update_image(self, title, path):
         try:
-            self.conection()
-            cursor = self.conection.cursor()
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
             update = """UPDATE imagem SET title = ? and path=?"""
             cursor.execute(update, (title, path))
-            self.conection.commit()
+            connection.commit()
         except Exception as erro:
             print("Erro ao atualizar imagem :", erro)
         finally:
-            if self.conection:
+            if connection:
                 cursor.close()
-                self.conection.close()
+                connection.close()
 
     def delete_image(self, title, path):
         try:
-            self.conection()
-            cursor = self.conection.cursor()
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
             delete = """DELETE FROM imagem WHERE title = ? and path=?"""
             cursor.execute(delete, (title, path))
-            self.conection.commit()
+            connection.commit()
         except Exception as erro:
             print("Erro ao deletar imagem :", erro)
 
         finally:
             cursor.close()
-            self.conection.close()
+            connection.close()
 
     def initial_image(self, user):
         try:
-            self.conection()
-            cursor = self.conection.cursor()
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
             select = """SELECT * FROM imagem WHERE user =?"""
             cursor.execute(select, (user))
             cursor.fetchall()
         except Exception as erro:
             print("Erro ao selecionar imagem: ", erro)
         finally:
-            if self.conection:
+            if connection:
                 cursor.close()
-                self.conection.close()
+                connection.close()
