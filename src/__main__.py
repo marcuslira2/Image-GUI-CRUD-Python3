@@ -49,14 +49,15 @@ class Login(tk.Frame):
 
         try:
             user = self.txt_login.get()
+            user.strip()
             pwd = self.txt_pwd.get()
             acesso = bd.bd.select_user(self, user)
-            if user in acesso:
+            if user in acesso[2]:
                 try:
                     connection = sqlite3.connect('./bancocadastro.db')
                     cursor = connection.cursor()
                     select = """SELECT user FROM pessoa WHERE pwd = ?"""
-                    cursor.execute(select, pwd)
+                    cursor.execute(select, [pwd])
                     result = cursor.fetchone()
                     print(result)
                     if result == None:

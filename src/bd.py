@@ -41,7 +41,7 @@ class bd:
                 print("Conexão fechada")
 
     ## Criação de usuario
-    def insert_user(self,nome, cpf, user, pwd):
+    def insert_user(self, nome, cpf, user, pwd):
         try:
             connection = sqlite3.connect('./bancocadastro.db')
             cursor = connection.cursor()
@@ -62,8 +62,8 @@ class bd:
             connection = sqlite3.connect('./bancocadastro.db')
             cursor = connection.cursor()
             select = """SELECT * FROM pessoa WHERE user = ?"""
-            cursor.execute(select, user)
-            result=cursor.fetchone()
+            cursor.execute(select, [user])
+            result = cursor.fetchone()
             print(result)
             return result
 
@@ -82,7 +82,7 @@ class bd:
             insert = """INSERT INTO imagem(user,title,path,name) VALUES(?,?,?,?)"""
             cursor.execute(insert, (user, title, path, name))
             self.conection.commit()
-            return title,path,name
+            return title, path, name
 
         except Exception as erro:
             print("Erro ao inserir nova imagem : ", erro)

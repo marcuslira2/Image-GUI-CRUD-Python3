@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e825681a-f47d-410d-a580-ee6cc1714909" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bancocadastro.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/bancocadastro.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bd.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bd.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/teste.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/teste.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +57,7 @@
       <recent name="C:\Users\CLEIDE_PC\Documents\Image-GUI-CRUD-Python3" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.teste">
+  <component name="RunManager" selected="Python.__main__ (1)">
     <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Image-GUI-CRUD-Python3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -167,9 +165,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.teste" />
         <item itemvalue="Python.__main__ (1)" />
         <item itemvalue="Python.__init__" />
+        <item itemvalue="Python.teste" />
         <item itemvalue="Python.bd" />
         <item itemvalue="Python.__main__" />
       </list>
