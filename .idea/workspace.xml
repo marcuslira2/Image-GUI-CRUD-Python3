@@ -7,8 +7,6 @@
     <list default="true" id="e825681a-f47d-410d-a580-ee6cc1714909" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bancocadastro.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/bancocadastro.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bd.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bd.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

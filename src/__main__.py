@@ -32,7 +32,7 @@ class Login(tk.Frame):
         self.login = tk.Label(self, text="Login")
         self.txt_login = tk.Entry(self)
         self.pwd = tk.Label(self, text="Senha")
-        self.txt_pwd = tk.Entry(self)
+        self.txt_pwd = tk.Entry(self,show="*")
         self.cadastro = tk.Button(self, text="Cadastro",
                                   command=lambda: master.trocar_tela(Cadastro))
         self.entrar = tk.Button(self, text="Entrar",
