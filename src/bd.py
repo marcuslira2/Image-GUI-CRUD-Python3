@@ -81,15 +81,15 @@ class bd:
             cursor = connection.cursor()
             insert = """INSERT INTO imagem(user,title,path,name) VALUES(?,?,?,?)"""
             cursor.execute(insert, (user, title, path, name))
-            self.conection.commit()
+            connection.commit()
             return title, path, name
 
         except Exception as erro:
             print("Erro ao inserir nova imagem : ", erro)
         finally:
-            if self.conection:
+            if connection:
                 cursor.close()
-                self.conection.close()
+                connection.close()
 
     def select_image(self, user, path):
         try:

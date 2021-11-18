@@ -1,8 +1,9 @@
 import sqlite3
 import tkinter as tk
 import tkinter.messagebox
+import tkinter.filedialog as fd
 import bd
-import time
+
 
 
 class App(tk.Tk):
@@ -32,7 +33,7 @@ class Login(tk.Frame):
         self.login = tk.Label(self, text="Login")
         self.txt_login = tk.Entry(self)
         self.pwd = tk.Label(self, text="Senha")
-        self.txt_pwd = tk.Entry(self,show="*")
+        self.txt_pwd = tk.Entry(self, show="*")
         self.cadastro = tk.Button(self, text="Cadastro",
                                   command=lambda: master.trocar_tela(Cadastro))
         self.entrar = tk.Button(self, text="Entrar",
@@ -49,15 +50,14 @@ class Login(tk.Frame):
 
         try:
             user = self.txt_login.get()
-            user.strip()
             pwd = self.txt_pwd.get()
             acesso = bd.bd.select_user(self, user)
             if user in acesso[2]:
                 try:
                     connection = sqlite3.connect('./bancocadastro.db')
                     cursor = connection.cursor()
-                    select = """SELECT user FROM pessoa WHERE pwd = ?"""
-                    cursor.execute(select, [pwd])
+                    select = """SELECT ? FROM pessoa WHERE pwd = ?"""
+                    cursor.execute(select, [user, pwd])
                     result = cursor.fetchone()
                     print(result)
                     if result == None:
@@ -102,8 +102,8 @@ class Cadastro(tk.Frame):
         self.lb_pwd = tk.Label(self, text="Senha")
         self.txt_pwd = tk.Entry(self)
         self.cadastro = tk.Button(self, text="Cadastrar",
-                                  command=lambda: [self.cadastrar_pessoa(),
-                                                   master.trocar_tela(Login), self.msgbox()])
+                                  command=lambda: [self.cadastrar_pessoa(), self.msgbox(),
+                                                   master.trocar_tela(Login)])
         self.voltar = tk.Button(self, text="Voltar",
                                 command=lambda: master.trocar_tela(Login))
 
@@ -143,6 +143,7 @@ class Cadastro(tk.Frame):
 class Principal(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
+
         self.tela = tk.Label(self, text="Tela principal")
         self.lb01 = tk.Label(self, text="img01")
         self.lb02 = tk.Label(self, text="img02")
@@ -153,7 +154,10 @@ class Principal(tk.Frame):
         self.lb07 = tk.Label(self, text="img07")
         self.lb08 = tk.Label(self, text="img08")
         self.lb09 = tk.Label(self, text="img09")
-        self.img01 = tk.Canvas(self, width=150, heigh=150, bg='red')
+
+        self.img01 = tk.Canvas(self, width=150, heigh=150)
+
+
         self.img02 = tk.Canvas(self, width=150, heigh=150, bg='red')
         self.img03 = tk.Canvas(self, width=150, heigh=150, bg='red')
         self.img04 = tk.Canvas(self, width=150, heigh=150, bg='red')
@@ -168,6 +172,7 @@ class Principal(tk.Frame):
         self.adicionar = tk.Button(self, text="Adicionar")
         self.btn_forward = tk.Button(self, text="Avançar")
         self.btn_backward = tk.Button(self, text="Voltar")
+
 
         self.tela.grid(column=2, row=0)
         self.img01.grid(column=1, row=1)
@@ -193,6 +198,16 @@ class Principal(tk.Frame):
         self.btn_backward.grid(column=0, row=3)
         self.btn_forward.grid(column=6, row=3)
         self.sair.grid(column=2, row=8)
+
+        img01 = tk.PhotoImage(file='scizor.png')
+        self.img01.create_image(image=img01)
+
+    """def adicionar(self):
+
+        name =tk.filedialog.askopenfilenames()
+        diretorio = tk.filedialog.askdirectory()
+        bd.bd.insert_image(self,user,name,diretorio)"""
+
 
 
 if __name__ == "__main__":
