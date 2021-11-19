@@ -10,6 +10,7 @@ class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self.title("App")
+        bd.bd.abrirConexao(self)
         self._frame = None
         self.trocar_tela(Login)
 
@@ -50,6 +51,7 @@ class Login(tk.Frame):
 
         try:
             user = self.txt_login.get()
+            user.strip()
             pwd = self.txt_pwd.get()
             acesso = bd.bd.select_user(self, user)
             if user in acesso[2]:
@@ -157,7 +159,6 @@ class Principal(tk.Frame):
 
         self.img01 = tk.Canvas(self, width=150, heigh=150)
 
-
         self.img02 = tk.Canvas(self, width=150, heigh=150, bg='red')
         self.img03 = tk.Canvas(self, width=150, heigh=150, bg='red')
         self.img04 = tk.Canvas(self, width=150, heigh=150, bg='red')
@@ -199,8 +200,7 @@ class Principal(tk.Frame):
         self.btn_forward.grid(column=6, row=3)
         self.sair.grid(column=2, row=8)
 
-        img01 = tk.PhotoImage(file='scizor.png')
-        self.img01.create_image(image=img01)
+
 
     """def adicionar(self):
 

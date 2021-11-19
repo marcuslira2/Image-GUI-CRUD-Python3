@@ -1,11 +1,11 @@
-import tkinter  # from tkinter import Tk for Python 3.x
+import tkinter
 import tkinter.filedialog as fd
-import
 
-janela = tkinter.Tk()  # we don't want a full GUI, so keep the root window from appearing
+
+janela = tkinter.Tk()
 canvas = tkinter.Canvas(janela, width=800, height=800)
 canvas.pack()
-filepath = fd.askopenfilenames()  # show an "Open" dialog box and return the path to the selected file
+filepath = fd.askopenfilenames()
 print(len(filepath))
 lista ={}
 print(len(lista))
