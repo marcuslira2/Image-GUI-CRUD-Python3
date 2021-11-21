@@ -1,3 +1,4 @@
+import ntpath
 import sqlite3
 import tkinter as tk
 import tkinter.messagebox
@@ -7,6 +8,7 @@ import bd
 
 
 class App(tk.Tk):
+
     def __init__(self):
         tk.Tk.__init__(self)
         self.title("App")
@@ -72,6 +74,10 @@ class Login(tk.Frame):
                             tk.messagebox.showinfo("Alert", "Usuario bloqueado por 1 minuto")
                             self.tentativas = 0
                     else:
+                        global usuario_sessao
+                        usuario_sessao = user
+                        print(usuario_sessao)
+
                         master.trocar_tela(Principal)
                         self.tentativas = 0
                 except Exception as erro:
@@ -145,6 +151,7 @@ class Cadastro(tk.Frame):
 class Principal(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
+        print(usuario_sessao)
 
         self.tela = tk.Label(self, text="Tela principal")
         self.lb01 = tk.Label(self, text="img01")
@@ -157,8 +164,7 @@ class Principal(tk.Frame):
         self.lb08 = tk.Label(self, text="img08")
         self.lb09 = tk.Label(self, text="img09")
 
-        self.img01 = tk.Canvas(self, width=150, heigh=150)
-
+        self.img01 = tk.Canvas(self, width=150, heigh=150, bg='red')
         self.img02 = tk.Canvas(self, width=150, heigh=150, bg='red')
         self.img03 = tk.Canvas(self, width=150, heigh=150, bg='red')
         self.img04 = tk.Canvas(self, width=150, heigh=150, bg='red')
@@ -170,10 +176,9 @@ class Principal(tk.Frame):
 
         self.sair = tk.Button(self, text="Sair",
                               command=lambda: master.trocar_tela(Login))
-        self.adicionar = tk.Button(self, text="Adicionar")
+        self.btn_adicionar = tk.Button(self, text="Adicionar",command=lambda: self.adicionar())
         self.btn_forward = tk.Button(self, text="Avançar")
         self.btn_backward = tk.Button(self, text="Voltar")
-
 
         self.tela.grid(column=2, row=0)
         self.img01.grid(column=1, row=1)
@@ -195,19 +200,20 @@ class Principal(tk.Frame):
         self.img09.grid(column=3, row=5)
         self.lb09.grid(column=3, row=6)
 
-        self.adicionar.grid(column=2, row=7)
+        self.btn_adicionar.grid(column=2, row=7)
         self.btn_backward.grid(column=0, row=3)
         self.btn_forward.grid(column=6, row=3)
         self.sair.grid(column=2, row=8)
 
-
-
-    """def adicionar(self):
-
-        name =tk.filedialog.askopenfilenames()
-        diretorio = tk.filedialog.askdirectory()
-        bd.bd.insert_image(self,user,name,diretorio)"""
-
+    def adicionar(self):
+        try:
+            user = usuario_sessao
+            path =tk.filedialog.askopenfilename()
+            arquivo = ntpath.basename(path)
+            bd.bd.insert_image(self,user,f'img{1}',path,arquivo)
+            print("Cadastro feito com sucesso")
+        except Exception as erro:
+            print(erro)
 
 
 if __name__ == "__main__":
