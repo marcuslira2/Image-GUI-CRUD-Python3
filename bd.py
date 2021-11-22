@@ -91,14 +91,17 @@ class bd:
                 cursor.close()
                 connection.close()
 
-    def select_image(self, user, path):
+    def select_image(self, user):
         try:
             connection = sqlite3.connect('./bancocadastro.db')
             cursor = connection.cursor()
-            select = """SELECT * FROM imagem WHERE user =? and path =?"""
-            cursor.execute(select, (user, path))
+            select = """SELECT * FROM imagem WHERE user =?"""
+            cursor.execute(select, [user])
+            result = cursor.fetchall()
+            for i in range(len(result)):
+                print(result[i])
         except Exception as erro:
-            print("Erro ao selecionar imagem: ", erro)
+            print(erro)
         finally:
             if connection:
                 cursor.close()
@@ -118,12 +121,12 @@ class bd:
                 cursor.close()
                 connection.close()
 
-    def delete_image(self, title, path):
+    def delete_image(self, user, title, path):
         try:
             connection = sqlite3.connect('./bancocadastro.db')
             cursor = connection.cursor()
-            delete = """DELETE FROM imagem WHERE title = ? and path=?"""
-            cursor.execute(delete, (title, path))
+            delete = """DELETE FROM imagem WHERE user=? and title = ? and path=?"""
+            cursor.execute(delete, (user, title, path))
             connection.commit()
         except Exception as erro:
             print("Erro ao deletar imagem :", erro)
@@ -131,17 +134,3 @@ class bd:
         finally:
             cursor.close()
             connection.close()
-
-    def initial_image(self, user):
-        try:
-            connection = sqlite3.connect('./bancocadastro.db')
-            cursor = connection.cursor()
-            select = """SELECT * FROM imagem WHERE user =?"""
-            cursor.execute(select, (user))
-            cursor.fetchall()
-        except Exception as erro:
-            print("Erro ao selecionar imagem: ", erro)
-        finally:
-            if connection:
-                cursor.close()
-                connection.close()

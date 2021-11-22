@@ -6,7 +6,6 @@ import tkinter.filedialog as fd
 import bd
 
 
-
 class App(tk.Tk):
 
     def __init__(self):
@@ -52,8 +51,7 @@ class Login(tk.Frame):
     def verificar(self, master):
 
         try:
-            user = self.txt_login.get()
-            user.strip()
+            user = self.txt_login.get().strip()
             pwd = self.txt_pwd.get()
             acesso = bd.bd.select_user(self, user)
             if user in acesso[2]:
@@ -77,7 +75,6 @@ class Login(tk.Frame):
                         global usuario_sessao
                         usuario_sessao = user
                         print(usuario_sessao)
-
                         master.trocar_tela(Principal)
                         self.tentativas = 0
                 except Exception as erro:
@@ -154,6 +151,7 @@ class Principal(tk.Frame):
         print(usuario_sessao)
 
         self.tela = tk.Label(self, text="Tela principal")
+
         self.lb01 = tk.Label(self, text="img01")
         self.lb02 = tk.Label(self, text="img02")
         self.lb03 = tk.Label(self, text="img03")
@@ -164,19 +162,19 @@ class Principal(tk.Frame):
         self.lb08 = tk.Label(self, text="img08")
         self.lb09 = tk.Label(self, text="img09")
 
-        self.img01 = tk.Canvas(self, width=150, heigh=150, bg='red')
-        self.img02 = tk.Canvas(self, width=150, heigh=150, bg='red')
-        self.img03 = tk.Canvas(self, width=150, heigh=150, bg='red')
-        self.img04 = tk.Canvas(self, width=150, heigh=150, bg='red')
-        self.img05 = tk.Canvas(self, width=150, heigh=150, bg='red')
-        self.img06 = tk.Canvas(self, width=150, heigh=150, bg='red')
-        self.img07 = tk.Canvas(self, width=150, heigh=150, bg='red')
-        self.img08 = tk.Canvas(self, width=150, heigh=150, bg='red')
-        self.img09 = tk.Canvas(self, width=150, heigh=150, bg='red')
+        self.img01 = tk.Canvas(self, width=150, heigh=150)
+        self.img02 = tk.Canvas(self, width=150, heigh=150)
+        self.img03 = tk.Canvas(self, width=150, heigh=150)
+        self.img04 = tk.Canvas(self, width=150, heigh=150)
+        self.img05 = tk.Canvas(self, width=150, heigh=150)
+        self.img06 = tk.Canvas(self, width=150, heigh=150)
+        self.img07 = tk.Canvas(self, width=150, heigh=150)
+        self.img08 = tk.Canvas(self, width=150, heigh=150)
+        self.img09 = tk.Canvas(self, width=150, heigh=150)
 
         self.sair = tk.Button(self, text="Sair",
                               command=lambda: master.trocar_tela(Login))
-        self.btn_adicionar = tk.Button(self, text="Adicionar",command=lambda: self.adicionar())
+        self.btn_adicionar = tk.Button(self, text="Adicionar", command=lambda: self.adicionar())
         self.btn_forward = tk.Button(self, text="Avançar")
         self.btn_backward = tk.Button(self, text="Voltar")
 
@@ -205,15 +203,38 @@ class Principal(tk.Frame):
         self.btn_forward.grid(column=6, row=3)
         self.sair.grid(column=2, row=8)
 
+        try:
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
+            select = """SELECT * FROM imagem WHERE user =?"""
+            cursor.execute(select, [usuario_sessao])
+            result = cursor.fetchall()
+            foto = tkinter.PhotoImage(file=result[0][2])
+            self.img01.create_image(20, 20, image=foto)
+
+            print(ntpath.basename(result[0][2]))
+        except Exception as erro:
+            print(erro)
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+
     def adicionar(self):
         try:
             user = usuario_sessao
-            path =tk.filedialog.askopenfilename()
-            arquivo = ntpath.basename(path)
-            bd.bd.insert_image(self,user,f'img{1}',path,arquivo)
+            path = tk.filedialog.askopenfilenames()
+            for i in range(len(path)):
+                arquivo = ntpath.basename(path[i])
+                bd.bd.insert_image(self, user, f'img{i}', path[i], arquivo)
             print("Cadastro feito com sucesso")
         except Exception as erro:
             print(erro)
+
+    # def deletar(self,user,title, path):
+    #     user = usuario_sessao
+    #     title =
+    #     bd.bd.delete_image(self,user,title,path)
 
 
 if __name__ == "__main__":
