@@ -150,27 +150,53 @@ class Principal(tk.Frame):
         tk.Frame.__init__(self, master)
         print(usuario_sessao)
 
+
         self.tela = tk.Label(self, text="Tela principal")
 
-        self.lb01 = tk.Label(self, text="img01")
-        self.lb02 = tk.Label(self, text="img02")
-        self.lb03 = tk.Label(self, text="img03")
-        self.lb04 = tk.Label(self, text="img04")
-        self.lb05 = tk.Label(self, text="img05")
-        self.lb06 = tk.Label(self, text="img06")
-        self.lb07 = tk.Label(self, text="img07")
-        self.lb08 = tk.Label(self, text="img08")
-        self.lb09 = tk.Label(self, text="img09")
+        # self.lb01 = tk.Label(self, text="img01")
+        # self.lb02 = tk.Label(self, text="img02")
+        # self.lb03 = tk.Label(self, text="img03")
+        # self.lb04 = tk.Label(self, text="img04")
+        # self.lb05 = tk.Label(self, text="img05")
+        # self.lb06 = tk.Label(self, text="img06")
+        # self.lb07 = tk.Label(self, text="img07")
+        # self.lb08 = tk.Label(self, text="img08")
+        # self.lb09 = tk.Label(self, text="img09")
 
-        self.img01 = tk.Canvas(self, width=150, heigh=150)
-        self.img02 = tk.Canvas(self, width=150, heigh=150)
-        self.img03 = tk.Canvas(self, width=150, heigh=150)
-        self.img04 = tk.Canvas(self, width=150, heigh=150)
-        self.img05 = tk.Canvas(self, width=150, heigh=150)
-        self.img06 = tk.Canvas(self, width=150, heigh=150)
-        self.img07 = tk.Canvas(self, width=150, heigh=150)
-        self.img08 = tk.Canvas(self, width=150, heigh=150)
-        self.img09 = tk.Canvas(self, width=150, heigh=150)
+        # self.img02 = tk.Canvas(self, width=150, height=150)
+        # self.img03 = tk.Canvas(self, width=150, height=150)
+        # self.img04 = tk.Canvas(self, width=150, height=150)
+        # self.img05 = tk.Canvas(self, width=150, height=150)
+        # self.img06 = tk.Canvas(self, width=150, height=150)
+        # self.img07 = tk.Canvas(self, width=150, height=150)
+        # self.img08 = tk.Canvas(self, width=150, height=150)
+        # self.img09 = tk.Canvas(self, width=150, height=150)
+        img01 = tk.Canvas(self, width=150, height=150, bg='red')
+        img01.grid(column=1, row=1)
+        imagem2 = tk.PhotoImage(file='C:/Users/CLEIDE_PC/Pictures/Pokemon/32px-Pokémon_Fire_Type_Icon.svg.png')
+        img01.create_image(75, 75, image=imagem2)
+
+        # try:
+        #     connection = sqlite3.connect('./bancocadastro.db')
+        #     cursor = connection.cursor()
+        #     select = """SELECT * FROM imagem WHERE user =?"""
+        #     cursor.execute(select, [usuario_sessao])
+        #     result = cursor.fetchall()
+        #     print(result)
+        #
+        # except Exception as erro:
+        #     print(erro)
+        # finally:
+        #     if connection:
+        #         cursor.close()
+        #         connection.close()
+        #
+        # filepath = result[0][2]
+        # print(filepath)
+        # lista = {}
+        # lista[0] = tk.PhotoImage(file=filepath)
+        # print(lista[0])
+        # img01.create_image(75, 75, image=lista[0])
 
         self.sair = tk.Button(self, text="Sair",
                               command=lambda: master.trocar_tela(Login))
@@ -179,46 +205,29 @@ class Principal(tk.Frame):
         self.btn_backward = tk.Button(self, text="Voltar")
 
         self.tela.grid(column=2, row=0)
-        self.img01.grid(column=1, row=1)
-        self.lb01.grid(column=1, row=2)
-        self.img02.grid(column=2, row=1)
-        self.lb02.grid(column=2, row=2)
-        self.img03.grid(column=3, row=1)
-        self.lb03.grid(column=3, row=2)
-        self.img04.grid(column=1, row=3)
-        self.lb04.grid(column=1, row=4)
-        self.img05.grid(column=2, row=3)
-        self.lb05.grid(column=2, row=4)
-        self.img06.grid(column=3, row=3)
-        self.lb06.grid(column=3, row=4)
-        self.img07.grid(column=1, row=5)
-        self.lb07.grid(column=1, row=6)
-        self.img08.grid(column=2, row=5)
-        self.lb08.grid(column=2, row=6)
-        self.img09.grid(column=3, row=5)
-        self.lb09.grid(column=3, row=6)
+
+        # self.lb01.grid(column=1, row=2)
+        # self.img02.grid(column=2, row=1)
+        # self.lb02.grid(column=2, row=2)
+        # self.img03.grid(column=3, row=1)
+        # self.lb03.grid(column=3, row=2)
+        # self.img04.grid(column=1, row=3)
+        # self.lb04.grid(column=1, row=4)
+        # self.img05.grid(column=2, row=3)
+        # self.lb05.grid(column=2, row=4)
+        # self.img06.grid(column=3, row=3)
+        # self.lb06.grid(column=3, row=4)
+        # self.img07.grid(column=1, row=5)
+        # self.lb07.grid(column=1, row=6)
+        # self.img08.grid(column=2, row=5)
+        # self.lb08.grid(column=2, row=6)
+        # self.img09.grid(column=3, row=5)
+        # self.lb09.grid(column=3, row=6)
 
         self.btn_adicionar.grid(column=2, row=7)
         self.btn_backward.grid(column=0, row=3)
         self.btn_forward.grid(column=6, row=3)
         self.sair.grid(column=2, row=8)
-
-        try:
-            connection = sqlite3.connect('./bancocadastro.db')
-            cursor = connection.cursor()
-            select = """SELECT * FROM imagem WHERE user =?"""
-            cursor.execute(select, [usuario_sessao])
-            result = cursor.fetchall()
-            foto = tkinter.PhotoImage(file=result[0][2])
-            self.img01.create_image(20, 20, image=foto)
-
-            print(ntpath.basename(result[0][2]))
-        except Exception as erro:
-            print(erro)
-        finally:
-            if connection:
-                cursor.close()
-                connection.close()
 
     def adicionar(self):
         try:
@@ -230,6 +239,10 @@ class Principal(tk.Frame):
             print("Cadastro feito com sucesso")
         except Exception as erro:
             print(erro)
+
+
+
+
 
     # def deletar(self,user,title, path):
     #     user = usuario_sessao
