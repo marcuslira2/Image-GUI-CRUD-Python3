@@ -107,12 +107,26 @@ class bd:
                 cursor.close()
                 connection.close()
 
-    def update_image(self, title, path):
+    def update_image(self, path,user):
         try:
             connection = sqlite3.connect('./bancocadastro.db')
             cursor = connection.cursor()
-            update = """UPDATE imagem SET title = ? and path=?"""
-            cursor.execute(update, (title, path))
+            update = """UPDATE imagem SET path=? WHERE user= ?"""
+            cursor.execute(update, (path,user))
+            connection.commit()
+        except Exception as erro:
+            print("Erro ao atualizar imagem :", erro)
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+
+    def update_title(self, title, path,user):
+        try:
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
+            update = """UPDATE imagem SET title = ? WHERE path=? and user= ?"""
+            cursor.execute(update, [title, path,user])
             connection.commit()
         except Exception as erro:
             print("Erro ao atualizar imagem :", erro)

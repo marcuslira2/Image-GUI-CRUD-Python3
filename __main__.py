@@ -1,8 +1,11 @@
 import ntpath
+import os
 import sqlite3
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.filedialog as fd
+from PIL import Image, ImageTk
+
 import bd
 
 
@@ -52,45 +55,30 @@ class Login(tk.Frame):
 
         try:
             user = self.txt_login.get().strip()
-            pwd = self.txt_pwd.get()
+            pwd = self.txt_pwd.get().strip()
             acesso = bd.bd.select_user(self, user)
-            if user in acesso[2]:
-                try:
-                    connection = sqlite3.connect('./bancocadastro.db')
-                    cursor = connection.cursor()
-                    select = """SELECT ? FROM pessoa WHERE pwd = ?"""
-                    cursor.execute(select, [user, pwd])
-                    result = cursor.fetchone()
-                    print(result)
-                    if result == None:
-                        self.tentativas += 1
-                        if self.tentativas < 5:
-                            tk.messagebox.showinfo("Alert",
-                                                   f"Senha errada, tente novametne, numero de tentativas restantes {5 - self.tentativas}")
-                        if self.tentativas >= 5:
-                            self.txt_login.get()
-                            tk.messagebox.showinfo("Alert", "Usuario bloqueado por 1 minuto")
-                            self.tentativas = 0
-                    else:
-                        global usuario_sessao
-                        usuario_sessao = user
-                        print(usuario_sessao)
-                        master.trocar_tela(Principal)
-                        self.tentativas = 0
-                except Exception as erro:
-                    print("Erro ao pequisar usuario : ", erro)
-
-                finally:
-                    if connection:
-                        cursor.close()
-                        connection.close()
-
-
+            if user in acesso[2] and pwd in acesso[3] and pwd != '':
+                global usuario_sessao
+                usuario_sessao = user
+                print(usuario_sessao)
+                master.trocar_tela(Principal)
+                self.tentativas = 0
+            elif user in acesso[2] and pwd not in acesso[3]:
+                self.tentativas += 1
+                if self.tentativas < 5:
+                    tk.messagebox.showinfo("Alert",
+                                           f"Senha errada, tente novametne, numero de tentativas restantes {5 - self.tentativas}")
+                if self.tentativas >= 5:
+                    self.txt_login.get()
+                    tk.messagebox.showinfo("Alert", "Usuario bloqueado por 1 minuto")
+                    self.tentativas = 0
+                else:
+                    print('erro')
             else:
-                print("Usuario não cadastrado")
+                print("Usuario não encontrado")
 
-        except sqlite3.DataError as erro:
-            print("Erro :", erro)
+        except Exception as erro:
+            print('erro:', erro)
 
 
 class Cadastro(tk.Frame):
@@ -150,104 +138,182 @@ class Principal(tk.Frame):
         tk.Frame.__init__(self, master)
         print(usuario_sessao)
 
-
         self.tela = tk.Label(self, text="Tela principal")
+        self.img01 = tk.Canvas(self, width=150, height=150, bg='red')
+        self.img02 = tk.Canvas(self, width=150, height=150, bg='green')
+        self.img03 = tk.Canvas(self, width=150, height=150, bg='blue')
+        self.img04 = tk.Canvas(self, width=150, height=150, bg='blue')
+        self.img05 = tk.Canvas(self, width=150, height=150, bg='red')
+        self.img06 = tk.Canvas(self, width=150, height=150, bg='green')
+        self.img07 = tk.Canvas(self, width=150, height=150, bg='green')
+        self.img08 = tk.Canvas(self, width=150, height=150, bg='blue')
+        self.img09 = tk.Canvas(self, width=150, height=150, bg='red')
 
-        # self.lb01 = tk.Label(self, text="img01")
-        # self.lb02 = tk.Label(self, text="img02")
-        # self.lb03 = tk.Label(self, text="img03")
-        # self.lb04 = tk.Label(self, text="img04")
-        # self.lb05 = tk.Label(self, text="img05")
-        # self.lb06 = tk.Label(self, text="img06")
-        # self.lb07 = tk.Label(self, text="img07")
-        # self.lb08 = tk.Label(self, text="img08")
-        # self.lb09 = tk.Label(self, text="img09")
+        try:
+            connection = sqlite3.connect('./bancocadastro.db')
+            cursor = connection.cursor()
+            select = """SELECT * FROM imagem WHERE user =?"""
+            cursor.execute(select, [usuario_sessao])
+            result = cursor.fetchall()
+            print(result)
 
-        # self.img02 = tk.Canvas(self, width=150, height=150)
-        # self.img03 = tk.Canvas(self, width=150, height=150)
-        # self.img04 = tk.Canvas(self, width=150, height=150)
-        # self.img05 = tk.Canvas(self, width=150, height=150)
-        # self.img06 = tk.Canvas(self, width=150, height=150)
-        # self.img07 = tk.Canvas(self, width=150, height=150)
-        # self.img08 = tk.Canvas(self, width=150, height=150)
-        # self.img09 = tk.Canvas(self, width=150, height=150)
-        img01 = tk.Canvas(self, width=150, height=150, bg='red')
-        img01.grid(column=1, row=1)
-        imagem2 = tk.PhotoImage(file='C:/Users/CLEIDE_PC/Pictures/Pokemon/32px-Pokémon_Fire_Type_Icon.svg.png')
-        img01.create_image(75, 75, image=imagem2)
+        except Exception as erro:
+            print(erro)
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+        self.caminho = result
+        print(len(self.caminho))
+        self.lista = {}
+        try:
+            for i in range(len(result)):
+                checagem = os.path.isfile(result[i][2])
+                while True:
+                    if checagem:
+                        self.lista[i] = tk.PhotoImage(file=result[i][2])
+                        break
+                    else:
+                        mensagem = tkinter.messagebox.askquestion('Aviso',
+                                                                  f'Imagem não encontrada no grid{i + 1}\ndeseja deletar?',
+                                                                  icon='warning')
+                        if mensagem == 'yes':
+                            self.deletar_imagem(master, result[i][2], result[i][0], result[i][1])
 
-        # try:
-        #     connection = sqlite3.connect('./bancocadastro.db')
-        #     cursor = connection.cursor()
-        #     select = """SELECT * FROM imagem WHERE user =?"""
-        #     cursor.execute(select, [usuario_sessao])
-        #     result = cursor.fetchall()
-        #     print(result)
-        #
-        # except Exception as erro:
-        #     print(erro)
-        # finally:
-        #     if connection:
-        #         cursor.close()
-        #         connection.close()
-        #
-        # filepath = result[0][2]
-        # print(filepath)
-        # lista = {}
-        # lista[0] = tk.PhotoImage(file=filepath)
-        # print(lista[0])
-        # img01.create_image(75, 75, image=lista[0])
+                            break
+                        else:
+                            self.lista[i + 1] = tk.PhotoImage(file=result[i + 1][2])
+                            break
+
+            print(self.lista)
+        except Exception as erro:
+            print("Novo erro: ", erro)
+
+        try:
+            if self.lista[0]:
+                self.img01.create_image(75, 75, image=self.lista[0])
+                self.lb01 = tk.Entry(self)
+                self.lb01.grid(column=1, row=2)
+                self.lb01.insert(0, result[0][1])
+
+            if self.lista[1]:
+                self.img02.create_image(75, 75, image=self.lista[1])
+                self.lb02 = tk.Entry(self)
+                self.lb02.grid(column=2, row=2)
+                self.lb02.insert(0, result[1][1])
+
+            if self.lista[2]:
+                self.img03.create_image(75, 75, image=self.lista[2])
+                self.lb03 = tk.Entry(self)
+                self.lb03.grid(column=3, row=2)
+                self.lb03.insert(0, result[2][1])
+
+            if self.lista[3]:
+                self.img04.create_image(75, 75, image=self.lista[3])
+                self.lb04 = tk.Entry(self)
+                self.lb04.grid(column=1, row=4)
+                self.lb04.insert(0, result[3][1])
+
+            if self.lista[4]:
+                self.img05.create_image(75, 75, image=self.lista[4])
+                self.lb05 = tk.Entry(self)
+                self.lb05.grid(column=2, row=4)
+                self.lb05.insert(0, result[4][1])
+
+            if self.lista[5]:
+                self.img06.create_image(75, 75, image=self.lista[5])
+                self.lb06 = tk.Entry(self)
+                self.lb06.grid(column=3, row=4)
+                self.lb06.insert(0, result[5][1])
+
+            if self.lista[6]:
+                self.img07.create_image(75, 75, image=self.lista[6])
+                self.lb07 = tk.Entry(self)
+                self.lb07.grid(column=1, row=6)
+                self.lb07.insert(0, result[6][1])
+
+            if self.lista[7]:
+                self.img08.create_image(75, 75, image=self.lista[7])
+                self.lb08 = tk.Entry(self)
+                self.lb08.grid(column=2, row=6)
+                self.lb08.insert(0, result[7][1])
+
+            if self.lista[8]:
+                self.img09.create_image(75, 75, image=self.lista[8])
+                self.lb09 = tk.Entry(self)
+                self.lb09.grid(column=3, row=6)
+                self.lb09.insert(0, result[8][1])
+
+        except Exception as erro:
+            print(erro)
 
         self.sair = tk.Button(self, text="Sair",
                               command=lambda: master.trocar_tela(Login))
-        self.btn_adicionar = tk.Button(self, text="Adicionar", command=lambda: self.adicionar())
-        self.btn_forward = tk.Button(self, text="Avançar")
-        self.btn_backward = tk.Button(self, text="Voltar")
+        self.btn_adicionar = tk.Button(self, text="Adicionar", command=lambda: self.adicionar(master))
+        self.btn_atualizar = tk.Button(self, text="Registrar nomes", command=lambda: self.atualizar_nomes())
 
         self.tela.grid(column=2, row=0)
-
-        # self.lb01.grid(column=1, row=2)
-        # self.img02.grid(column=2, row=1)
-        # self.lb02.grid(column=2, row=2)
-        # self.img03.grid(column=3, row=1)
-        # self.lb03.grid(column=3, row=2)
-        # self.img04.grid(column=1, row=3)
-        # self.lb04.grid(column=1, row=4)
-        # self.img05.grid(column=2, row=3)
-        # self.lb05.grid(column=2, row=4)
-        # self.img06.grid(column=3, row=3)
-        # self.lb06.grid(column=3, row=4)
-        # self.img07.grid(column=1, row=5)
-        # self.lb07.grid(column=1, row=6)
-        # self.img08.grid(column=2, row=5)
-        # self.lb08.grid(column=2, row=6)
-        # self.img09.grid(column=3, row=5)
-        # self.lb09.grid(column=3, row=6)
+        self.img01.grid(column=1, row=1)
+        self.img02.grid(column=2, row=1)
+        self.img03.grid(column=3, row=1)
+        self.img04.grid(column=1, row=3)
+        self.img05.grid(column=2, row=3)
+        self.img06.grid(column=3, row=3)
+        self.img07.grid(column=1, row=5)
+        self.img08.grid(column=2, row=5)
+        self.img09.grid(column=3, row=5)
 
         self.btn_adicionar.grid(column=2, row=7)
-        self.btn_backward.grid(column=0, row=3)
-        self.btn_forward.grid(column=6, row=3)
-        self.sair.grid(column=2, row=8)
+        self.btn_atualizar.grid(column=2, row=8)
+        self.sair.grid(column=2, row=9)
 
-    def adicionar(self):
+    def adicionar(self, master):
         try:
             user = usuario_sessao
             path = tk.filedialog.askopenfilenames()
             for i in range(len(path)):
                 arquivo = ntpath.basename(path[i])
                 bd.bd.insert_image(self, user, f'img{i}', path[i], arquivo)
+            master.trocar_tela(Principal)
             print("Cadastro feito com sucesso")
         except Exception as erro:
             print(erro)
 
+    def atualizar_nomes(self):
+        try:
+            if self.lb01:
+                self.lb01.get()
+                bd.bd.update_title(self, self.lb01.get(), self.caminho[0][2], usuario_sessao)
+            if self.lb02:
+                self.lb02.get()
+                bd.bd.update_title(self, self.lb02.get(), self.caminho[1][2], usuario_sessao)
+            if self.lb03:
+                self.lb03.get()
+                bd.bd.update_title(self, self.lb03.get(), self.caminho[2][2], usuario_sessao)
+            if self.lb04:
+                self.lb04.get()
+                bd.bd.update_title(self, self.lb04.get(), self.caminho[3][2], usuario_sessao)
+            if self.lb05:
+                self.lb05.get()
+                bd.bd.update_title(self, self.lb05.get(), self.caminho[4][2], usuario_sessao)
+            if self.lb06:
+                self.lb06.get()
+                bd.bd.update_title(self, self.lb06.get(), self.caminho[5][2], usuario_sessao)
+            if self.lb07:
+                self.lb07.get()
+                bd.bd.update_title(self, self.lb07.get(), self.caminho[6][2], usuario_sessao)
+            if self.lb08:
+                self.lb08.get()
+                bd.bd.update_title(self, self.lb08.get(), self.caminho[7][2], usuario_sessao)
+            if self.lb09:
+                self.lb09.get()
+                bd.bd.update_title(self, self.lb09.get(), self.caminho[8][2], usuario_sessao)
+        except Exception as erro:
+            print(erro)
 
-
-
-
-    # def deletar(self,user,title, path):
-    #     user = usuario_sessao
-    #     title =
-    #     bd.bd.delete_image(self,user,title,path)
+    def deletar_imagem(self, master, path, user, title):
+        bd.bd.delete_image(self, user, title, path)
+        master.trocar_tela(Principal)
 
 
 if __name__ == "__main__":
